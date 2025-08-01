@@ -65,8 +65,14 @@ func _ready():
 
 func _create_timeline_ui():
 	# Create timeline buttons for each track
+	var track_containers = {
+		"move_right": $BottomHalf/TimelineContainer/TimelineGrid/TimelineTracks/MoveRightTrack,
+		"move_left": $BottomHalf/TimelineContainer/TimelineGrid/TimelineTracks/MoveLeftTrack,
+		"jump": $BottomHalf/TimelineContainer/TimelineGrid/TimelineTracks/JumpTrack
+	}
+	
 	for track_name in tracks.keys():
-		var track_container = get_node("BottomHalf/TimelineContainer/TimelineGrid/TimelineTracks/" + track_name.capitalize().replace("_", "") + "Track")
+		var track_container = track_containers[track_name]
 		timeline_buttons[track_name] = []
 		
 		for i in range(total_sixteenth_notes):
@@ -79,13 +85,9 @@ func _create_timeline_ui():
 			timeline_buttons[track_name].append(button)
 
 func _setup_click_track():
-	# Create a simple click sound using AudioStreamGenerator
-	var generator = AudioStreamGenerator.new()
-	generator.mix_rate = 44100
-	generator.buffer_length = 0.1
-	
-	click_track.stream = generator
-	click_track.volume_db = -10
+	# For now, we'll use a simple approach without audio generation
+	# The click track will be set up when needed during playback
+	pass
 
 func _on_record_pressed():
 	if not is_recording and not is_playing:
@@ -148,7 +150,7 @@ func _process(delta):
 	elif is_playing:
 		_process_playback(delta)
 
-func _process_recording(delta):
+func _process_recording(_delta):
 	var elapsed_time = Time.get_time_dict_from_system()["unix"] - recording_start_time
 	var current_sixteenth = int(elapsed_time / sixteenth_note_time) % total_sixteenth_notes
 	
@@ -188,7 +190,9 @@ func _execute_action(action):
 			tween.tween_property(character, "position:y", character.position.y, 0.2)
 
 func _play_click():
-	click_track.play()
+	# For now, we'll just print to console instead of playing audio
+	print("Click!")
+	# click_track.play()
 
 func _highlight_current_position(sixteenth_note):
 	# Reset all highlights
