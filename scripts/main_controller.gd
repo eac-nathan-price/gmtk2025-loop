@@ -14,6 +14,7 @@ var current_time = 0.0
 var is_recording = false
 var is_playing = false
 var recording_start_time = 0.0
+var recording_elapsed_time = 0.0
 
 # Tracks data - each track is an array of booleans for each sixteenth note
 var tracks = {
@@ -109,7 +110,8 @@ func _on_stop_pressed():
 
 func _start_recording():
 	is_recording = true
-	recording_start_time = Time.get_time_dict_from_system()["unix"]
+	recording_start_time = Time.get_ticks_msec() / 1000.0
+	recording_elapsed_time = 0.0
 	record_button.text = "Stop Recording"
 	play_button.disabled = true
 	
@@ -150,9 +152,9 @@ func _process(delta):
 	elif is_playing:
 		_process_playback(delta)
 
-func _process_recording(_delta):
-	var elapsed_time = Time.get_time_dict_from_system()["unix"] - recording_start_time
-	var current_sixteenth = int(elapsed_time / sixteenth_note_time) % total_sixteenth_notes
+func _process_recording(delta):
+	recording_elapsed_time += delta
+	var current_sixteenth = int(recording_elapsed_time / sixteenth_note_time) % total_sixteenth_notes
 	
 	# Check for ANY key press during current sixteenth note
 	if Input.is_anything_pressed():
