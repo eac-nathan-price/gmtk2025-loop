@@ -52,6 +52,8 @@ var input_map = {
 
 # Timeline UI elements
 var timeline_buttons = {}
+var timeline_cursor = null
+var last_key_state = false
 
 func _ready():
 	# Initialize tracks with empty data
@@ -96,6 +98,19 @@ func _create_timeline_ui():
 			button.pressed.connect(_on_timeline_button_pressed.bind(track_name, i))
 			track_container.add_child(button)
 			timeline_buttons[track_name].append(button)
+	
+	# Create timeline cursor (moving line)
+	_create_timeline_cursor()
+
+func _create_timeline_cursor():
+	# Create a vertical line that moves across the timeline
+	timeline_cursor = ColorRect.new()
+	timeline_cursor.color = Color.RED
+	timeline_cursor.custom_minimum_size = Vector2(2, 90)  # Thin red line across all tracks
+	timeline_cursor.visible = false
+	
+	# Add it to the timeline container
+	$BottomHalf/TimelineContainer/TimelineGrid.add_child(timeline_cursor)
 
 func _setup_click_track():
 	# For now, we'll use a simple approach without audio generation
@@ -149,6 +164,10 @@ func _start_recording_track(track_name):
 	recording_start_time = Time.get_ticks_msec() / 1000.0
 	recording_elapsed_time = 0.0
 	
+	# Show timeline cursor
+	if timeline_cursor:
+		timeline_cursor.visible = true
+	
 	# Update button text
 	match track_name:
 		"move_right":
@@ -166,6 +185,17 @@ func _start_recording_track(track_name):
 
 func _stop_recording_track(track_name):
 	recording_tracks[track_name] = false
+	
+	# Check if any track is still recording
+	var any_recording = false
+	for track_name_check in recording_tracks.keys():
+		if recording_tracks[track_name_check]:
+			any_recording = true
+			break
+	
+	# Hide timeline cursor if no tracks are recording
+	if not any_recording and timeline_cursor:
+		timeline_cursor.visible = false
 	
 	# Update button text
 	match track_name:
@@ -223,22 +253,41 @@ func _process(delta):
 	elif is_playing:
 		_process_playback(delta)
 
+func _update_timeline_cursor(sixteenth_note):
+	if timeline_cursor:
+		# Calculate position based on sixteenth note
+		var x_pos = 80 + (sixteenth_note * 8)  # 80 for labels, 8 pixels per sixteenth note
+		timeline_cursor.position.x = x_pos
+		timeline_cursor.visible = true
+
 func _process_recording(delta):
 	recording_elapsed_time += delta
 	var current_sixteenth = int(recording_elapsed_time / sixteenth_note_time) % total_sixteenth_notes
 	
-	# Check for ANY key press during current sixteenth note
-	if Input.is_anything_pressed():
+	# Update timeline cursor position
+	_update_timeline_cursor(current_sixteenth)
+	
+	# Check for ANY key down event during current sixteenth note (not held)
+	# We need to track key states to detect only key down events
+	var current_key_state = Input.is_anything_pressed()
+	
+	if current_key_state and not last_key_state:
+		# Key was just pressed (key down event)
 		# Record on all currently recording tracks
 		for track_name in recording_tracks.keys():
 			if recording_tracks[track_name]:
 				tracks[track_name][current_sixteenth] = true
 				timeline_buttons[track_name][current_sixteenth].button_pressed = true
 				timeline_buttons[track_name][current_sixteenth].modulate = Color.GREEN
+	
+	last_key_state = current_key_state
 
 func _process_playback(delta):
 	current_time += delta
 	var current_sixteenth = int(current_time / sixteenth_note_time) % total_sixteenth_notes
+	
+	# Update timeline cursor position
+	_update_timeline_cursor(current_sixteenth)
 	
 	# Play click track on beat
 	if int(current_time / beat_time) != int((current_time - delta) / beat_time):
