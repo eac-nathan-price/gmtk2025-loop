@@ -22,7 +22,7 @@ var tracks = {
 	"jump": []
 }
 
-# Input mapping
+# Input mapping - we'll use any key press for recording
 var input_map = {
 	"move_right": "ui_right",
 	"move_left": "ui_left", 
@@ -154,12 +154,12 @@ func _process_recording(_delta):
 	var elapsed_time = Time.get_time_dict_from_system()["unix"] - recording_start_time
 	var current_sixteenth = int(elapsed_time / sixteenth_note_time) % total_sixteenth_notes
 	
-	# Check for input during current sixteenth note
-	for track_name in input_map.keys():
-		if Input.is_action_just_pressed(input_map[track_name]):
-			tracks[track_name][current_sixteenth] = true
-			timeline_buttons[track_name][current_sixteenth].button_pressed = true
-			timeline_buttons[track_name][current_sixteenth].modulate = Color.GREEN
+	# Check for ANY key press during current sixteenth note
+	if Input.is_anything_pressed():
+		# Record on the move_right track for any key press
+		tracks["move_right"][current_sixteenth] = true
+		timeline_buttons["move_right"][current_sixteenth].button_pressed = true
+		timeline_buttons["move_right"][current_sixteenth].modulate = Color.GREEN
 
 func _process_playback(delta):
 	current_time += delta

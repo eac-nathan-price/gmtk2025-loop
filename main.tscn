@@ -47,13 +47,21 @@ layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 400.0
+stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="TopHalf"]
 handle_input_locally = false
 size = Vector2i(1152, 400)
 render_target_update_mode = 4
+render_target_clear_mode = 2
 
 [node name="GameWorld" type="Node2D" parent="TopHalf/SubViewport"]
+
+[node name="Background" type="ColorRect" parent="TopHalf/SubViewport/GameWorld"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.1, 0.1, 0.1, 1)
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="TopHalf/SubViewport/GameWorld"]
 position = Vector2(576, 200)
@@ -115,7 +123,7 @@ size_flags_horizontal = 3
 
 [node name="MoveRightLabel" type="Label" parent="BottomHalf/TimelineContainer/TimelineGrid/TrackLabels"]
 layout_mode = 2
-text = "Move Right (D)"
+text = "Move Right (Any Key)"
 custom_minimum_size = Vector2(0, 30)
 
 [node name="MoveLeftLabel" type="Label" parent="BottomHalf/TimelineContainer/TimelineGrid/TrackLabels"]
