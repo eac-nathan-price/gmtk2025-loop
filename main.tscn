@@ -46,7 +46,7 @@ script = ExtResource("2_script")
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 400.0
+offset_bottom = 500.0
 stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="TopHalf"]
@@ -87,15 +87,11 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -400.0
+offset_top = -300.0
 
 [node name="DAWHeader" type="HBoxContainer" parent="BottomHalf"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 50)
-
-[node name="RecordButton" type="Button" parent="BottomHalf/DAWHeader"]
-layout_mode = 2
-text = "Record"
 
 [node name="PlayButton" type="Button" parent="BottomHalf/DAWHeader"]
 layout_mode = 2
@@ -115,7 +111,7 @@ size_flags_vertical = 3
 
 [node name="TimelineGrid" type="GridContainer" parent="BottomHalf/TimelineContainer"]
 layout_mode = 2
-columns = 17
+columns = 65
 
 [node name="TrackLabels" type="VBoxContainer" parent="BottomHalf/TimelineContainer/TimelineGrid"]
 layout_mode = 2
@@ -123,17 +119,17 @@ size_flags_horizontal = 3
 
 [node name="MoveRightLabel" type="Label" parent="BottomHalf/TimelineContainer/TimelineGrid/TrackLabels"]
 layout_mode = 2
-text = "Move Right (Any Key)"
+text = "Move Right"
 custom_minimum_size = Vector2(0, 30)
 
 [node name="MoveLeftLabel" type="Label" parent="BottomHalf/TimelineContainer/TimelineGrid/TrackLabels"]
 layout_mode = 2
-text = "Move Left (A)"
+text = "Move Left"
 custom_minimum_size = Vector2(0, 30)
 
 [node name="JumpLabel" type="Label" parent="BottomHalf/TimelineContainer/TimelineGrid/TrackLabels"]
 layout_mode = 2
-text = "Jump (Space)"
+text = "Jump"
 custom_minimum_size = Vector2(0, 30)
 
 [node name="TimelineTracks" type="VBoxContainer" parent="BottomHalf/TimelineContainer/TimelineGrid"]
@@ -144,12 +140,27 @@ size_flags_horizontal = 3
 layout_mode = 2
 custom_minimum_size = Vector2(0, 30)
 
+[node name="RecordRightButton" type="Button" parent="BottomHalf/TimelineContainer/TimelineGrid/TimelineTracks/MoveRightTrack"]
+layout_mode = 2
+text = "Record"
+custom_minimum_size = Vector2(80, 30)
+
 [node name="MoveLeftTrack" type="HBoxContainer" parent="BottomHalf/TimelineContainer/TimelineGrid/TimelineTracks"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 30)
 
+[node name="RecordLeftButton" type="Button" parent="BottomHalf/TimelineContainer/TimelineGrid/TimelineTracks/MoveLeftTrack"]
+layout_mode = 2
+text = "Record"
+custom_minimum_size = Vector2(80, 30)
+
 [node name="JumpTrack" type="HBoxContainer" parent="BottomHalf/TimelineContainer/TimelineGrid/TimelineTracks"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 30)
+
+[node name="RecordJumpButton" type="Button" parent="BottomHalf/TimelineContainer/TimelineGrid/TimelineTracks/JumpTrack"]
+layout_mode = 2
+text = "Record"
+custom_minimum_size = Vector2(80, 30)
 
 [node name="ClickTrack" type="AudioStreamPlayer" parent="."] 
