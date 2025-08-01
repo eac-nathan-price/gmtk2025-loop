@@ -1,0 +1,147 @@
+[gd_scene load_steps=8 format=4 uid="uid://bqx8y2n3m4k5l"]
+
+[ext_resource type="Texture2D" uid="uid://u331q55m2f5j" path="res://loop-atlas.png" id="1_37kl0"]
+[ext_resource type="Script" path="res://scripts/main_controller.gd" id="2_script"]
+[ext_resource type="Script" path="res://scripts/character_controller.gd" id="3_script"]
+[ext_resource type="Script" path="res://scripts/tilemap_setup.gd" id="4_script"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8uh7m"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6uqi0"]
+texture = ExtResource("1_37kl0")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_ppyta"]
+tile_size = Vector2i(64, 64)
+sources/0 = SubResource("TileSetAtlasSource_6uqi0")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
+bg_color = Color(0.2, 0.2, 0.2, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2"]
+bg_color = Color(0.1, 0.1, 0.1, 1)
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("2_script")
+
+[node name="TopHalf" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 400.0
+
+[node name="SubViewport" type="SubViewport" parent="TopHalf"]
+handle_input_locally = false
+size = Vector2i(1152, 400)
+render_target_update_mode = 4
+
+[node name="GameWorld" type="Node2D" parent="TopHalf/SubViewport"]
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="TopHalf/SubViewport/GameWorld"]
+position = Vector2(576, 200)
+script = ExtResource("3_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="TopHalf/SubViewport/GameWorld/CharacterBody2D"]
+modulate = Color(0, 1, 0, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TopHalf/SubViewport/GameWorld/CharacterBody2D"]
+shape = SubResource("CapsuleShape2D_8uh7m")
+
+[node name="TileMap" type="TileMap" parent="TopHalf/SubViewport/GameWorld"]
+tile_set = SubResource("TileSet_ppyta")
+format = 2
+script = ExtResource("4_script")
+
+[node name="Camera2D" type="Camera2D" parent="TopHalf/SubViewport/GameWorld"]
+position = Vector2(576, 200)
+
+[node name="BottomHalf" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -400.0
+
+[node name="DAWHeader" type="HBoxContainer" parent="BottomHalf"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 50)
+
+[node name="RecordButton" type="Button" parent="BottomHalf/DAWHeader"]
+layout_mode = 2
+text = "Record"
+
+[node name="PlayButton" type="Button" parent="BottomHalf/DAWHeader"]
+layout_mode = 2
+text = "Play"
+
+[node name="StopButton" type="Button" parent="BottomHalf/DAWHeader"]
+layout_mode = 2
+text = "Stop"
+
+[node name="BPMDisplay" type="Label" parent="BottomHalf/DAWHeader"]
+layout_mode = 2
+text = "120 BPM"
+
+[node name="TimelineContainer" type="ScrollContainer" parent="BottomHalf"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TimelineGrid" type="GridContainer" parent="BottomHalf/TimelineContainer"]
+layout_mode = 2
+columns = 17
+
+[node name="TrackLabels" type="VBoxContainer" parent="BottomHalf/TimelineContainer/TimelineGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MoveRightLabel" type="Label" parent="BottomHalf/TimelineContainer/TimelineGrid/TrackLabels"]
+layout_mode = 2
+text = "Move Right (D)"
+custom_minimum_size = Vector2(0, 30)
+
+[node name="MoveLeftLabel" type="Label" parent="BottomHalf/TimelineContainer/TimelineGrid/TrackLabels"]
+layout_mode = 2
+text = "Move Left (A)"
+custom_minimum_size = Vector2(0, 30)
+
+[node name="JumpLabel" type="Label" parent="BottomHalf/TimelineContainer/TimelineGrid/TrackLabels"]
+layout_mode = 2
+text = "Jump (Space)"
+custom_minimum_size = Vector2(0, 30)
+
+[node name="TimelineTracks" type="VBoxContainer" parent="BottomHalf/TimelineContainer/TimelineGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MoveRightTrack" type="HBoxContainer" parent="BottomHalf/TimelineContainer/TimelineGrid/TimelineTracks"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 30)
+
+[node name="MoveLeftTrack" type="HBoxContainer" parent="BottomHalf/TimelineContainer/TimelineGrid/TimelineTracks"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 30)
+
+[node name="JumpTrack" type="HBoxContainer" parent="BottomHalf/TimelineContainer/TimelineGrid/TimelineTracks"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 30)
+
+[node name="ClickTrack" type="AudioStreamPlayer" parent="."] 
